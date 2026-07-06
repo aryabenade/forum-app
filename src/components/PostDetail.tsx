@@ -3,7 +3,6 @@ import type { Post } from "./PostList";
 import { supabase } from "../supabase-client";
 import { LikeButton } from "./LikeButton";
 import { CommentSection } from "./CommentSection";
-import { useAuth } from "../context/AuthContext";
 
 interface Props {
   postId: number;
@@ -23,10 +22,6 @@ const fetchPostById = async (id: number): Promise<Post> => {
 
 
 export const PostDetail = ({ postId }: Props) => {
-
-  const { user } = useAuth()
-
-  const displayName = user?.user_metadata.user_name || user?.email;
 
   const { data, error, isLoading } = useQuery<Post, Error>({
     queryKey: ["post", postId],
@@ -60,7 +55,7 @@ export const PostDetail = ({ postId }: Props) => {
 
       <p className="text-gray-400">{data?.content}</p>
       <p className="text-gray-500 text-md">
-        Posted on: {new Date(data!.created_at).toLocaleDateString()} by {displayName}
+        Posted on: {new Date(data!.created_at).toLocaleDateString()} by {data?.author}
       </p>
 
       <LikeButton postId={postId} />

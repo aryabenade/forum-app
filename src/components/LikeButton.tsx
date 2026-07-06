@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 
 interface Props {
     postId: number;
@@ -60,6 +61,7 @@ const fetchVotes = async (postId: number): Promise<Vote[]> => {
 export const LikeButton = ({ postId }: Props) => {
 
     const { user } = useAuth()
+    const [noUser, setNoUser] = useState(false)
 
     const queryClient = useQueryClient()
 
@@ -80,6 +82,14 @@ export const LikeButton = ({ postId }: Props) => {
         }
     })
 
+    const handleVote = (voteValue: number) => {
+        if (!user) {
+            setNoUser(true)
+            return;
+        }
+        mutate(voteValue);
+    }
+
 
     if (isLoading) {
         return <div> Loading votes...</div>;
@@ -94,22 +104,25 @@ export const LikeButton = ({ postId }: Props) => {
     const userVote = votes?.find((v) => v.user_id === user?.id)?.vote;
     return (
         <div className="flex items-center space-x-4 my-4">
-      <button
-        onClick={() => mutate(1)}
-        className={`px-3 py-1 cursor-pointer rounded transition-colors duration-150 ${
-          userVote === 1 ? "bg-green-500 text-white" : "bg-gray-200 text-black"
-        }`}
-      >
-        👍 {likes}
-      </button>
-      <button
-        onClick={() => mutate(-1)}
-        className={`px-3 py-1 cursor-pointer rounded transition-colors duration-150 ${
-          userVote === -1 ? "bg-red-500 text-white" : "bg-gray-200 text-black"
-        }`}
-      >
-        👎 {dislikes}
-      </button>
-    </div>
+            <button
+                onClick={() => handleVote(1)}
+                className={`px-3 py-1 cursor-pointer rounded transition-colors duration-150 ${userVote === 1 ? "bg-green-500 text-white" : "bg-gray-200 text-black"
+                    }`}
+            >
+                👍 {likes}
+            </button>
+            <button
+                onClick={() => handleVote(-1)}
+                className={`px-3 py-1 cursor-pointer rounded transition-colors duration-150 ${userVote === -1 ? "bg-red-500 text-white" : "bg-gray-200 text-black"
+                    }`}
+            >
+                👎 {dislikes}
+            </button>
+            {noUser && (
+                <p className="text-gray-500">
+                    You must be logged in to vote.
+                </p>
+            )}
+        </div>
     )
 }

@@ -5,65 +5,65 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
 
 interface Props {
-    comment: Comment & { children?: Comment[] };
-    postId: number;
+  comment: Comment & { children?: Comment[] };
+  postId: number;
 
 }
 
 const createReply = async (
-    replyContent: string,
-    postId: number,
-    parentCommentId: number,
-    userId?: string,
-    author?: string
+  replyContent: string,
+  postId: number,
+  parentCommentId: number,
+  userId?: string,
+  author?: string
 ) => {
-    if (!userId || !author) {
-        throw new Error("You must be logged in to reply")
-    }
+  if (!userId || !author) {
+    throw new Error("You must be logged in to reply")
+  }
 
-    const { error } = await supabase.from("comments").insert({
-        post_id: postId,
-        content: replyContent,
-        parent_comment_id: parentCommentId,
-        user_id: userId,
-        author: author
-    })
+  const { error } = await supabase.from("comments").insert({
+    post_id: postId,
+    content: replyContent,
+    parent_comment_id: parentCommentId,
+    user_id: userId,
+    author: author
+  })
 
-    if (error) throw new Error(error.message)
+  if (error) throw new Error(error.message)
 }
 
 export const CommentItem = ({ comment, postId }: Props) => {
-    const [showReply, setShowReply] = useState<boolean>(false)
-    const [replyText, setReplyText] = useState<string>("")
-    const [isCollapsed, setIsCollapsed] = useState<boolean>(false)
-    const { user } = useAuth()
+  const [showReply, setShowReply] = useState<boolean>(false)
+  const [replyText, setReplyText] = useState<string>("")
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false)
+  const { user } = useAuth()
 
-    const queryClient = useQueryClient()
+  const queryClient = useQueryClient()
 
-    const { mutate, isPending, isError } = useMutation({
-        mutationFn: (replyContent: string) =>
-            createReply(
-                replyContent,
-                postId,
-                comment.id,
-                user?.id,
-                user?.user_metadata?.user_name
-            ),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["comments", postId] })
-            setReplyText("")
-            setShowReply(false)
-        }
-    })
-
-    const handleReplySubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!replyText) return;
-        mutate(replyText)
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: (replyContent: string) =>
+      createReply(
+        replyContent,
+        postId,
+        comment.id,
+        user?.id,
+        user?.user_metadata?.user_name
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] })
+      setReplyText("")
+      setShowReply(false)
     }
+  })
 
-    return (
-     <div className="pl-4 border-l border-white/10">
+  const handleReplySubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!replyText) return;
+    mutate(replyText)
+  }
+
+  return (
+    <div className="pl-4 border-l border-white/50">
       <div className="mb-2">
         <div className="flex items-center space-x-2">
           {/* Display the commenter's username */}
@@ -77,7 +77,7 @@ export const CommentItem = ({ comment, postId }: Props) => {
         <p className="text-gray-300">{comment.content}</p>
         <button
           onClick={() => setShowReply((prev) => !prev)}
-          className="text-blue-500 text-sm mt-1"
+          className="text-blue-500 text-sm mt-1 cursor-pointer"
         >
           {showReply ? "Cancel" : "Reply"}
         </button>
@@ -87,18 +87,23 @@ export const CommentItem = ({ comment, postId }: Props) => {
           <textarea
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            className="w-full border border-white/10 bg-transparent p-2 rounded"
+            className="w-full border-2 border-white/20 bg-transparent p-2 rounded"
             placeholder="Write a reply..."
             rows={2}
           />
           <button
             type="submit"
-            className="mt-1 bg-blue-500 text-white px-3 py-1 rounded"
+            className="mt-1 bg-blue-500 text-white px-3 py-1 rounded cursor-pointer"
           >
             {isPending ? "Posting..." : "Post Reply"}
           </button>
           {isError && <p className="text-red-500">Error posting reply.</p>}
         </form>
+      )}
+      {!user && showReply && (
+        <p className="text-gray-500 text-sm mb-2">
+          You must be logged in to reply.
+        </p>
       )}
 
       {comment.children && comment.children.length > 0 && (
@@ -150,5 +155,5 @@ export const CommentItem = ({ comment, postId }: Props) => {
         </div>
       )}
     </div>
-    )
+  )
 }

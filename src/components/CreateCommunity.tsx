@@ -39,9 +39,6 @@ export const CreateCommunity = () => {
 
     return (
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-4">
-            <h2 className="mb-6 py-3 text-6xl font-bold text-center text-transparent bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text">
-                Create New Community
-            </h2>
             <div>
                 <label htmlFor="name" className="block mb-2 font-medium">
                     Community Name

@@ -10,6 +10,7 @@ interface PostInput {
     content: string;
     avatar_url: string | null;
     community_id?: number | null;
+    author:string | null;
 }
 
 const sanitizeFileName = (name: string) => {
@@ -73,6 +74,7 @@ export const CreatePost = () => {
                     content,
                     avatar_url: user?.user_metadata.avatar_url || null,
                     community_id: communityId,
+                    author: user?.user_metadata.user_name || null
                 },
                 imageFile: selectedFile,
             });

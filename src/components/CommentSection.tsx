@@ -147,7 +147,7 @@ export const CommentSection = ({ postId }: Props) => {
           )}
         </form>
       ) : (
-        <p className="mb-4 text-gray-600">
+        <p className="mb-4 text-gray-500">
           You must be logged in to post a comment.
         </p>
       )}
