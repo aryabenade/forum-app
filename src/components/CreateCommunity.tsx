@@ -51,7 +51,7 @@ export const CreateCommunity = () => {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full p-2 bg-transparent border rounded border-white/10"
+                    className="w-full p-2 bg-transparent border-2 border-white/20 rounded"
                     required
                 />
             </div>
@@ -63,7 +63,7 @@ export const CreateCommunity = () => {
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full p-2 bg-transparent border rounded border-white/10"
+                    className="w-full p-2 bg-transparent border-2 border-white/20 rounded"
                     rows={3}
                 />
             </div>

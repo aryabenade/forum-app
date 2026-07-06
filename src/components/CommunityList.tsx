@@ -39,7 +39,7 @@ export const CommunityList = () => {
             {data?.map((community) => (
                 <div
                     key={community.id}
-                    className="border border-white/10 p-4 rounded hover:-translate-y-1 transition transform"
+                    className="border-2 border-white/20 p-4 rounded-2xl hover:-translate-y-1 transition transform"
                 >
                     <Link
                         to={`/community/${community.id}`}
