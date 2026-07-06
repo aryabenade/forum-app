@@ -132,7 +132,7 @@ export const CommentSection = ({ postId }: Props) => {
           <textarea
             value={newCommentText}
             onChange={(e) => setNewCommentText(e.target.value)}
-            className="w-full border border-white/10 bg-transparent p-2 rounded"
+            className="w-full border-2 border-white/20 bg-transparent p-2 rounded"
             placeholder="Write a comment..."
             rows={3}
           />
